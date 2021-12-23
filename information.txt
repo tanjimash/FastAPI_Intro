@@ -1,0 +1,10 @@
+Python FastAPI -- Intro
+
+
+Youtube Video Link:   https://www.youtube.com/watch?v=7t2alSnE2-I
+
+FastAPI Web Link:  https://fastapi.tiangolo.com/
+
+
+
+

@@ -1,0 +1,12 @@
+#####   Procedure of building a system with FastAPI #####
+
+
+1. Create the "main.py" file. Inside that, import the fastapi module & build simple APIs using simple python-methods.
+
+
+-----------------> Break down of FastAPI
+
+2. Initialize empty git repository in the working directory.
+
+3. 
+
