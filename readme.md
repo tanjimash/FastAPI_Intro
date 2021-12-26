@@ -9,3 +9,4 @@ Progress Procedure <br>
 + Create dynamic parameters for the routes of the blog APIs. <br>
 + Create parameters for the path-operation-function thus these params can accept the path-params & query-params from the **path-string** of the FastAPI route. <br>
 + Create another folder to make the code clean in order to demonstrate the **CRUD operations of the Blog**.
++ Create database conncetion file using SQLAlchemy.
