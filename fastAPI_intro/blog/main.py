@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from .schemas import *
+from . import models
+# from database import engine
 
 # FastAPI object
 app = FastAPI()
@@ -7,7 +9,12 @@ app = FastAPI()
 
 # [ NOTE ]: The class-model "Blog" is moved to the file "schemas.py" file.
 
+
+
 # [ IMPORTANT ]:  Create the DB connection using SQLAlchemy (SQL Toolkit & ORM).
+#       use to create database-table using following code-line.
+# models.Base.metadata.create_all(engine)   # define the DB-engine
+
 
 
 
