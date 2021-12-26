@@ -7,6 +7,8 @@ app = FastAPI()
 
 # [ NOTE ]: The class-model "Blog" is moved to the file "schemas.py" file.
 
+# [ IMPORTANT ]:  Create the DB connection using SQLAlchemy (SQL Toolkit & ORM).
+
 
 
 @app.post( '/subfolder/blog/' )
