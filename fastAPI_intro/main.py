@@ -78,6 +78,7 @@ def blogUnpublished():
 # [NB]: for dynamic routing, use any routing-variable inside the second-bracket "{}"
 #   To pass the routing0variable inside the function, use func-params.
 #   Require to define the "id" as string in the method-parameter
+# [ IMPORTANT ]:  Order matters, put all the fixed/ static paths first in the order.
 @app.get( '/blog/{id}/' )
 def blogDetail(id:int):
     context = {
@@ -147,6 +148,7 @@ def create_blog(request:Blog):
 # [ Note ]: Mainly for debugging purpose.
 # To change the port of the server while debugging/ running/ executing, 
 # use the following code-block.
+# This can be commented out.
 # ----------------------------------------------------------
 import uvicorn
 # to run it using the following port "9000", 
