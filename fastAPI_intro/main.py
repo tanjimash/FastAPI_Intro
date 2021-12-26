@@ -27,7 +27,7 @@ def about():
 
 
 
-# --------------- Handling the Query-Parameter
+# ---------------> Handling the Query-Parameter
 
 # [ IMPORTANT ]:  FastAPI is smart enough to differentiate between the path-param & the query-param.
 
@@ -103,3 +103,37 @@ def blogComments(id:int):
 
 
 
+# --------------------> Request Body & Response Body
+# [ IMPORTANT ]: When we send data from a client to our API, we send it as a "request body".
+#   A "request body" is the data send from the client to our API.
+#   A "response body" is the data send from our API to the client.
+
+# [ IMPORTANT ]: To use a "request body", we need to use the "pydantic models".
+#   Thus, we need to import the "BaseModel" from the "pydantic" model. Then generate a model class, 
+#   which will be extended by the specific fuonction, which requires to use a request-body.
+
+from pydantic import BaseModel
+
+
+# "Blog" model, which will be used as a request-body inside the "create_blog" func.
+# [ Note ]: models are similar to the db-tables
+class Blog(BaseModel):
+    title: str
+    blog: str
+    published: Optional[bool]   # not a required-field
+
+
+
+# Create new blog
+# The request-body needs to be defined inside the func-param, where we also have to define the model-class-name.
+# Now we can get the data from the user/ client to our API.
+@app.post( '/blog/' )
+def create_blog(request:Blog):
+    context = {
+        'title': 'Craete new blog API',
+        'message': 'A new blog is created!',
+    }
+    return { 
+        'data': context,
+        'request-body': request,
+    }
