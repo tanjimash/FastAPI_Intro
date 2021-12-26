@@ -57,7 +57,7 @@ def blogList(limit=10, published:bool=False, sort: Optional[str]=None):
 @app.get( '/blog/unpublished' )
 def blogUnpublished():
     context = {
-        'title': 'Blog List API',
+        'title': 'Unpublished Blog List API',
     }
     return { 'data': context }
 
@@ -127,13 +127,30 @@ class Blog(BaseModel):
 # Create new blog
 # The request-body needs to be defined inside the func-param, where we also have to define the model-class-name.
 # Now we can get the data from the user/ client to our API.
+# [ Debugging ]: inside the "launch.json" file of run/debug, speicify the "dirName.filename:fastAPIObjName" in the args section
 @app.post( '/blog/' )
 def create_blog(request:Blog):
     context = {
         'title': 'Craete new blog API',
         'message': 'A new blog is created!',
     }
+    # return request
     return { 
-        'data': context,
-        'request-body': request,
+        'data': context, 
+        'request-body': request, 
     }
+
+
+
+
+# ----------------------------------------------------------
+# [ Note ]: Mainly for debugging purpose.
+# To change the port of the server while debugging/ running/ executing, 
+# use the following code-block.
+# ----------------------------------------------------------
+import uvicorn
+# to run it using the following port "9000", 
+# we are required to use the cmd 
+#   "python3 main.py"
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=9000)
