@@ -9,6 +9,10 @@
 
 from fastapi import FastAPI
 from typing import Optional     # used for passing optional paramters in the path-operation-functions (methods)
+# from pydantic import 
+from pydantic import BaseModel
+
+
 
 
 # isntance of "FastAPI", used for decorating the methods.
@@ -27,7 +31,7 @@ def index():
     
     # since, we widely accept JSON for the APIs.
     context = {
-        'name': 'Tanjim',
+        'name': 'Homepage',
     }
     return { 'data': context }  # passing dict, like a JSON 
 
@@ -98,6 +102,37 @@ def unpublishedBlogList():
 
 
 
+
+
+"""
+pydantic models provide us with the models similar to ORM. BUt to use "pydantic models" we've to extend 
+our method with the "BaseModel" provided by the "pydantic" module itself.
+"""
+
+
+# pydantic model
+# This model will be used inside the parameter of "createBlog" function.
+class Blog(BaseModel):
+    title: str
+    body: str
+    published: Optional[ bool ]
+
+
+
+
+# Blog Create API
+# [ NB ]:  When we want to send data from a client (i.e. browser) to our API, then we send it using a 'request-body'.
+#       A request-body is the data to send to the client from the API & vice versa.
+# [ IMPORTANT ] To declare a 'request-body', we use "pydantic" models.
+# Require to pass the pydantic model className ("Blog") in the function in order to use the request-body sent from the clienr.
+# We need to define the "request" keyword as well inside the parameter.
+@app.post( '/blog/' )
+def createBlog( request: Blog ):
+    context = {
+        'title': 'A new blog is created',
+    }
+    return request
+    return { 'data': context }
 
 
 
