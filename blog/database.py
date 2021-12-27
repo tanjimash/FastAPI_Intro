@@ -17,7 +17,7 @@ from sqlalchemy.orm import sessionmaker     # create session
 # Create the database inside the working-file-directory:  "database.db"
 
 # Database_URL
-SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///./blog.db"
 
 # Create DB-engine
 engine = create_engine( SQLALCHEMY_DATABASE_URL, connect_args={ "check_same_thread":False } )

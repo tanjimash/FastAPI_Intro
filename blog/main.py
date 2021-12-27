@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from .schemas import *
+from . import models
+from .database import engine
+
 
 
 # FastAPI Obj
@@ -14,6 +17,10 @@ app = FastAPI()
 
 
 
+# [ Database-Model ]:  Create the tables inside the database.
+# Create the database models, also the database-engine
+# [ NOTE ]: whenever the application-server gets started, it's making a migration in the db-table.
+models.Base.metadata.create_all( engine )
 
 
 
