@@ -1,15 +1,21 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+from .schemas import *
+
 
 # FastAPI Obj
 app = FastAPI()
 
 
-# Blog model
-# [ NOTE ]: It will help the get the request-body from the client/ user while the corresponding API.
-class Blog(BaseModel):
-    title: str
-    body: str
+# [ IMPORATNT ]: Database Connection will be established after here. 
+# Database connection will be built inside the "database.py" file.
+
+
+# The blog-class-model is moved to the "schemas.py" file.
+
+
+
+
+
 
 
 
