@@ -65,6 +65,21 @@ NB:  Uvicorn is a lightning-fast ASGI server, which can be used to run django-pr
     ANd it'll throw an error, if any defult value is not defined for the params as well as not metioned in the url while hitting the API.
 
 
------------------> Create a new blog API
+-----------------> API: Create a new blog 
 
+11. For creating a new blog inside the DB, we first need to establish the connection with the database.
+
+12. [ Establish DB Connection ]: inside the "database.py"
+        Create the db-engine using the SQLAlchemy. Here we need to define the db path in the directory. Initially, we are using the SQLite DB.
+        Then need to instansiate the db-table mapping using the "declarative_base" module.
+        Create the DB session using the sessionmaker.
+    
+[ NB ]:  The model-class inside the "schemas.py" is responsible for creating the request-body in the browser/ client/ user-end.
+        The model-class inside the "models.py" is responsible for mapping the db-table as well as table-fields in the DB.
+
+13. [ "main.py" ]  For making the migrations inside the DB, we need to define the engine using the following code-block.
+            models.Base.metadata.create_all( engine )
+    Create the function ( "create_blog" ) to create the row inside the DB.
+
+[ IMPORTANT ]:  Any API function interacting with the DB should have the "db" param whose type will be define as Session inported from the "sqlalchemy.orm".
 

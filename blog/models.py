@@ -13,7 +13,3 @@ class Blog(Base):
     body = Column( String )
 
 
-
-# from sqlalchemy.ext.declarative import declarative_base
-# # Declare the mapping (db-table mapping)
-# Base = declarative_base()

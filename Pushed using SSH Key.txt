@@ -1,0 +1,7 @@
+# An SSH key ( "Home_desktop" ) is generated inside the company's GitHub account.
+
+# A detail documentation is added in my personal GitHub Account.
+
+# This push is made from the home-desktop. Thus, I've to generate SSH RSA key for the company's GitHub account. 
+    Also aaded a config file in the ~/.ssh directory of my home-linux-machine.
+

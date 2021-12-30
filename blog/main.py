@@ -64,10 +64,10 @@ def get_all_blogs( db: Session = Depends( get_db ) ):
 
 
 
-
+# Fetch data from a specific blog
+# This func will provide an input field for "id".
 @app.get( '/subfolder/blog/{id}' )    # cannot use spacing inside the 2nd bracket in the path-url
 def get_individual_blog_detail( id, db: Session = Depends( get_db ) ):
     blog = db.query( models.Blog ).filter( models.Blog.id == id ).first()
 
     return blog
-    return { 'msg': 'Fetch specific blog data' }
