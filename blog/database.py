@@ -29,6 +29,3 @@ Base = declarative_base()
 
 # Create database session
 SessionLocal = sessionmaker( bind=engine, autocommit=False, autoflush=False )
-
-# Declare the mapping (db-table mapping)
-Base = declarative_base()
