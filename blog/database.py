@@ -27,6 +27,8 @@ engine = create_engine( SQLALCHEMY_DATABASE_URL, connect_args={ "check_same_thre
 Base = declarative_base()
 
 
-# Create session
+# Create database session
 SessionLocal = sessionmaker( bind=engine, autocommit=False, autoflush=False )
 
+# Declare the mapping (db-table mapping)
+Base = declarative_base()

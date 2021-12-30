@@ -1,37 +1,46 @@
-from fastapi import FastAPI
-from .schemas import *
-from . import models
-from .database import engine
+from fastapi import FastAPI, Depends
+import schemas, models
+from database import engine, SessionLocal
+from sqlalchemy.orm import Session
 
 
 
-# FastAPI Obj
+
+
+# create the fastapi object
 app = FastAPI()
 
 
-# [ IMPORATNT ]: Database Connection will be established after here. 
-# Database connection will be built inside the "database.py" file.
+# migration command for the database
+# [ RESPONSIBLE ]: for creating/ updating db-table
+models.Base.metadata.create_all( engine )   # db will be created in the current directory "/blog/"
 
 
-# The blog-class-model is moved to the "schemas.py" file.
 
 
+# get the session of the DB
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-# [ Database-Model ]:  Create the tables inside the database.
-# Create the database models, also the database-engine
-# [ NOTE ]: whenever the application-server gets started, it's making a migration in the db-table.
-models.Base.metadata.create_all( engine )
 
 
 
 
 
 # Create a new blog, ( alter store that inside a database )
+# after establishing the DB connection, provide the db as session in the next-param.
+# Convert the session into the pydantic model.
 @app.post( '/subfolder/blog/' )
-def create_blog( request:Blog ):
-    context = {
-        'msg': 'Create a new blog',
-        'request': request,
-    }
-    return { 'data': context }
-
+# [ NOTE ]: 'Session' alone is not a pydantic thing. Thus, it'll depend on the "SessionLocal" obj from the "database.py" file
+def create_blog( request: schemas.Blog, db: Session = Depends( get_db ) ):
+    # Create the frame ( Schema ) according to the model-field of the class "Blog".
+    # create the instance of the request-data according to the models-fields
+    new_blog = models.Blog( title=request.title, body=request.body )
+    db.add( new_blog )  # add the new data-row
+    db.commit()  # save/ commit the addition of the new data
+    db.refresh( new_blog )  # refresh the "blog" table
+    return new_blog  # return the newly created blog from the db-table in the client-ui
