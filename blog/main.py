@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, status, HTTPException
+from starlette.responses import Response
 import schemas, models
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
@@ -35,7 +36,8 @@ def get_db():
 # after establishing the DB connection, provide the db as session in the next-param.
 # Convert the session into the pydantic model.
 # The "db" param will be of SQLAlchemy's "Session" object. And default value of the type-object will be fetched from the "get_db()" object.
-@app.post( '/subfolder/blog/' )
+# @app.post( '/subfolder/blog/', status_code=201 )
+@app.post( '/subfolder/blog/', status_code=status.HTTP_201_CREATED )
 # [ NOTE ]: 'Session' alone is not a pydantic thing. Thus, it'll depend on the "SessionLocal" obj from the "database.py" file.
 # Ref ( Brief Explanation of 'db: Session' param ):  https://www.youtube.com/watch?v=7t2alSnE2-I
 # Time-Frame:  1:38:00
@@ -54,7 +56,7 @@ def create_blog( request: schemas.Blog, db: Session = Depends( get_db ) ):
 
 
 # get blogs from the DB
-@app.get( '/subfolder/blog/' )
+@app.get( '/subfolder/blog/', status_code=status.HTTP_200_OK )
 def get_all_blogs( db: Session = Depends( get_db ) ):
     # [ Query: get all rows ] make a query to get all the rows of blogs from the DB
     blogs = db.query( models.Blog ).all()
@@ -66,8 +68,19 @@ def get_all_blogs( db: Session = Depends( get_db ) ):
 
 # Fetch data from a specific blog
 # This func will provide an input field for "id".
-@app.get( '/subfolder/blog/{id}' )    # cannot use spacing inside the 2nd bracket in the path-url
-def get_individual_blog_detail( id, db: Session = Depends( get_db ) ):
+@app.get( '/subfolder/blog/{id}', status_code=status.HTTP_200_OK )    # cannot use spacing inside the 2nd bracket in the path-url
+def get_individual_blog_detail( id, response: Response, db: Session = Depends( get_db ) ):
     blog = db.query( models.Blog ).filter( models.Blog.id == id ).first()
+    
+    # assigning appropriate status-code while handling error.
+    # check if there is any such blog available
+    if not blog:
+        # response.status_code = status.HTTP_404_NOT_FOUND
+        # return { 'data': f'Blog with the {id} is not available!' }   # provide a response msg
 
+        # Intead of using the aforementioned two things, use the HTTPException imported from the "fastapi"
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail= f'Blog with the {id} is not available!'
+        )
     return blog

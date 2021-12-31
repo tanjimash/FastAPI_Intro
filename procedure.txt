@@ -83,3 +83,21 @@ NB:  Uvicorn is a lightning-fast ASGI server, which can be used to run django-pr
 
 [ IMPORTANT ]:  Any API function interacting with the DB should have the "db" param whose type will be define as Session inported from the "sqlalchemy.orm".
 
+
+-----------------> Exception & Status Code
+
+[ NB ]:  When we create an API, it's very important to provide an appropriate status-code.
+
+14. We can define the status code inside the api-path-decorator with an extra parameter.
+    Follow the link below to define the appropriate http-status-codes.
+        https://docs.python.org/3/library/http.html#http.HTTPStatus
+    [ or follow ]:  https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+    
+    [ Alternatively - better approach ]: Import the "Status" module from the "fastapi" & 
+        use that in the "status_code" param. The VS Code auto-complete will help to guide.
+
+15. To ensure appropriate status-code while handling exception, we are required to use the "Response" module imported from "fastapi".
+    The response param in the method will be as "Response".
+    The status_code param will be overriden.
+
+    
