@@ -82,10 +82,6 @@ NB:  Uvicorn is a lightning-fast ASGI server, which can be used to run django-pr
     Create the function ( "create_blog" ) to create the row inside the DB.
 
 [ IMPORTANT ]:  Any API function interacting with the DB should have the "db" param whose type will be define as Session inported from the "sqlalchemy.orm".
-
-
------------------> Exception & Status Code
-
 [ NB ]:  When we create an API, it's very important to provide an appropriate status-code.
 
 14. We can define the status code inside the api-path-decorator with an extra parameter.
@@ -100,4 +96,13 @@ NB:  Uvicorn is a lightning-fast ASGI server, which can be used to run django-pr
     The response param in the method will be as "Response".
     The status_code param will be overriden.
 
-    
+
+-----------------> Blog Delete API
+
+16. To delete any record from the DB, we use the "delete" mwthod along with the "fastapi" decorator ( "app" ).
+    Firstly, need to make a query into the DB using the "filter" method. The blog 'id' will be passed from the api-path through the method-param.
+    In SQLAlchemy, the delete method works with the "filter" method. ( *tried to use the 'delete()' method along with the 'get()' ).
+    Finally, the db-session-instance is required to be committed to make an effect in the DB.
+
+    [ NB ]: If the status-code "204" is provided as param along with the api-path-url, then the "delete" API won't return any response-body.
+
