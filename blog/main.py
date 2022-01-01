@@ -66,7 +66,7 @@ def get_all_blogs( db: Session = Depends( get_db ) ):
 
 
 
-# Fetch data of a specific blog
+# Fetch data from a specific blog
 # This func will provide an input field for "id".
 @app.get( '/subfolder/blog/{id}', status_code=status.HTTP_200_OK )    # cannot use spacing inside the 2nd bracket in the path-url
 def get_individual_blog_detail( id, response: Response, db: Session = Depends( get_db ) ):
@@ -84,29 +84,3 @@ def get_individual_blog_detail( id, response: Response, db: Session = Depends( g
             detail= f'Blog with the {id} is not available!'
         )
     return blog
-
-
-
-
-
-# Delete a specific blog
-# [ NOTE ]: when the status-code 204 is used, nothing will be returned as response
-@app.delete( '/subfolder/blog/{id}', status_code=status.HTTP_204_NO_CONTENT )
-# @app.delete( '/subfolder/blog/{id}', status_code=204 )
-# @app.delete( '/subfolder/blog/{id}' )
-def delete_blog( id, db: Session=Depends( get_db ) ):
-    # make a query from the "Blog" model & filter based on the "ID"
-    # search for the blog-obj & directly delete the "Blog"
-    db.query( models.Blog ).filter( models.Blog.id == id ).delete( synchronize_session=False )
-    db.commit()     # after deleting a row, it's required to make commit
-
-
-    # [ NOTE ] if the status-code 204 is used, nothing can be returned as response-body
-    # return 'The blog is deleted!'
-    # return { 'msg': f'The blog with the id {id} is deleted!' }
-
-    # refer to the documentation of SQLAlchemy
-    # Ref:  https://docs.sqlalchemy.org/en/14/orm/query.html?highlight=delete#sqlalchemy.orm.Query.delete
-    #  Instead of fetching the first-data-row, will use the "delete()" operation.
-
-
