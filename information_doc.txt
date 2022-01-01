@@ -1,0 +1,7 @@
+# The initial practise is done in the office's desktop. That folder need to be uploaded in the git, & then after
+	this practise file will be replaced by the git-repo of this FastAPI framework.
+
+
+
+# To preview any markdown file, open the markdown file, and use the following keys.
+	ctrl + shift + v
