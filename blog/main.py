@@ -4,6 +4,7 @@ from starlette.responses import Response
 import schemas, models
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
+from typing import List
 
 
 # the methods used for interacting with the database are required to use the "db" param to fetch the DB-instance.
@@ -54,10 +55,15 @@ def create_blog( request: schemas.Blog, db: Session = Depends( get_db ) ):
 
 
 
-
+# while applying a schema-model to the respone-body where multiple-records exist,
+# then we need to wrap that response-model with List[]. 
+# [ NOTE ]:  List[] will be imported from the "typing" module.
 
 # get blogs from the DB
-@app.get( '/subfolder/blog/', status_code=status.HTTP_200_OK )
+# Using the response-model to display the response in customised manner.
+@app.get( '/subfolder/blog/', 
+        status_code=status.HTTP_200_OK,
+        response_model=List[schemas.blog_rModel] )
 def get_all_blogs( db: Session = Depends( get_db ) ):
     # [ Query: get all rows ] make a query to get all the rows of blogs from the DB
     blogs = db.query( models.Blog ).all()
@@ -69,7 +75,10 @@ def get_all_blogs( db: Session = Depends( get_db ) ):
 
 # Fetch data of a specific blog
 # This func will provide an input field for "id".
-@app.get( '/subfolder/blog/{id}', status_code=status.HTTP_200_OK )    # cannot use spacing inside the 2nd bracket in the path-url
+@app.get( 
+    '/subfolder/blog/{id}', 
+    status_code=status.HTTP_200_OK,
+    response_model=schemas.blog_rModel )    # cannot use spacing inside the 2nd bracket in the path-url
 def get_individual_blog_detail( id, response: Response, db: Session = Depends( get_db ) ):
     blog = db.query( models.Blog ).filter( models.Blog.id == id ).first()
     

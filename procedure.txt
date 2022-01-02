@@ -119,4 +119,23 @@ Ref [ Aid to build the data-update API ]:  https://www.youtube.com/watch?v=2g1Zj
     Finally, make the "commit()" func to actually take the effect in the db-table.
 
     [ Optional ]: Can return the updated data from the db-table, for that, make a "refresh()" func before that.
+
+
+-----------------> Response Model ( aka response-schema )
     
+18. As the name suggest, For the response rom the API to the client, 
+    we are required to define response-models.
+    By using a response-model, we can customize the response-body sent from the API to the client/ browser.
+    Create another schema-class which will be used for displaying the response-body after hitting the API from the client.
+    The schema-class will be used in the API-url-path as another param.
+    [ NOTE ] Since the response will be a provided from the API, so the response-model should be inside the faspAPI decorator's param instead of the method's param.
+    
+    Use the response-model in the "get_individual_blog_detail" & "get_all_blogs" APIs.
+
+    The response model param defines the response exactly similar to the response-model aka pydantic-model/ schema we have defined inside the "schemas.py" class.
+
+    [ IMPORTANT ]:  If we want to apply response-model to such API where multiple-records exist inside the response-body, 
+    then we need to wrap that with the "List[]" class imported from the "typing" module.
+
+
+
