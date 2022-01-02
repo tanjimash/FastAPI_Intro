@@ -106,8 +106,13 @@ NB:  Uvicorn is a lightning-fast ASGI server, which can be used to run django-pr
 
     [ NB ]: If the status-code "204" is provided as param along with the api-path-url, then the "delete" API won't return any response-body.
 
+    [ Further Development - Done ]:  Establish the exception-handling of no such available record for deleting.
+
 
 -----------------> Blog Update API
+
+Ref [ Aid to build the data-update API ]:  https://www.youtube.com/watch?v=2g1ZjA6zHRo
+    [ Time Frame ]:  01:08:30
 
 17. To update a particular record from the DB, first fetch that record from the DB. Thus, the "id" will be passed using the api-url-path through the method-param.
     Then the request data ("title", "body"), will be assigned to the instance of the record.

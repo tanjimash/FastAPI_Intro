@@ -92,14 +92,22 @@ def get_individual_blog_detail( id, response: Response, db: Session = Depends( g
 
 # Delete a specific blog
 # [ NOTE ]: when the status-code 204 is used, nothing will be returned as response
-# [ Further Development ]:  Exception handling for the delete-query. (view the blog-update section to get the idea)
 @app.delete( '/subfolder/blog/{id}', status_code=status.HTTP_204_NO_CONTENT )
 # @app.delete( '/subfolder/blog/{id}', status_code=204 )
 # @app.delete( '/subfolder/blog/{id}' )
 def delete_blog( id, db: Session=Depends( get_db ) ):
     # make a query from the "Blog" model & filter based on the "ID"
-    # search for the blog-obj & directly delete the "Blog"
-    db.query( models.Blog ).filter( models.Blog.id == id ).delete( synchronize_session=False )
+    # search for the blog-obj from the db-model "Blog"
+    blog = db.query( models.Blog ).filter( models.Blog.id == id )
+    
+    # Raise exception: if no such blog is available with that ID.
+    if not blog.first():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail= f'No such blog with id {id} is available!'
+        )
+    
+    blog.delete( synchronize_session=False )
     db.commit()     # after deleting a row, it's required to make commit
 
 
