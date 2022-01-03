@@ -82,10 +82,6 @@ NB:  Uvicorn is a lightning-fast ASGI server, which can be used to run django-pr
     Create the function ( "create_blog" ) to create the row inside the DB.
 
 [ IMPORTANT ]:  Any API function interacting with the DB should have the "db" param whose type will be define as Session inported from the "sqlalchemy.orm".
-
-
------------------> Exception & Status Code
-
 [ NB ]:  When we create an API, it's very important to provide an appropriate status-code.
 
 14. We can define the status code inside the api-path-decorator with an extra parameter.
@@ -100,4 +96,46 @@ NB:  Uvicorn is a lightning-fast ASGI server, which can be used to run django-pr
     The response param in the method will be as "Response".
     The status_code param will be overriden.
 
+
+-----------------> Blog Delete API
+
+16. To delete any record from the DB, we use the "delete" mwthod along with the "fastapi" decorator ( "app" ).
+    Firstly, need to make a query into the DB using the "filter" method. The blog 'id' will be passed from the api-path through the method-param.
+    In SQLAlchemy, the delete method works with the "filter" method. ( *tried to use the 'delete()' method along with the 'get()' ).
+    Finally, the db-session-instance is required to be committed to make an effect in the DB.
+
+    [ NB ]: If the status-code "204" is provided as param along with the api-path-url, then the "delete" API won't return any response-body.
+
+    [ Further Development - Done ]:  Establish the exception-handling of no such available record for deleting.
+
+
+-----------------> Blog Update API
+
+Ref [ Aid to build the data-update API ]:  https://www.youtube.com/watch?v=2g1ZjA6zHRo
+    [ Time Frame ]:  01:08:30
+
+17. To update a particular record from the DB, first fetch that record from the DB. Thus, the "id" will be passed using the api-url-path through the method-param.
+    Then the request data ("title", "body"), will be assigned to the instance of the record.
+    Finally, make the "commit()" func to actually take the effect in the db-table.
+
+    [ Optional ]: Can return the updated data from the db-table, for that, make a "refresh()" func before that.
+
+
+-----------------> Response Model ( aka response-schema )
     
+18. As the name suggest, For the response rom the API to the client, 
+    we are required to define response-models.
+    By using a response-model, we can customize the response-body sent from the API to the client/ browser.
+    Create another schema-class which will be used for displaying the response-body after hitting the API from the client.
+    The schema-class will be used in the API-url-path as another param.
+    [ NOTE ] Since the response will be a provided from the API, so the response-model should be inside the faspAPI decorator's param instead of the method's param.
+    
+    Use the response-model in the "get_individual_blog_detail" & "get_all_blogs" APIs.
+
+    The response model param defines the response exactly similar to the response-model aka pydantic-model/ schema we have defined inside the "schemas.py" class.
+
+    [ IMPORTANT ]:  If we want to apply response-model to such API where multiple-records exist inside the response-body, 
+    then we need to wrap that with the "List[]" class imported from the "typing" module.
+
+
+
