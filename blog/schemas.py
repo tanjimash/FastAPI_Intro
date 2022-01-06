@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 
 # #########################
@@ -17,6 +18,10 @@ class Blog(BaseModel):
     title: str
     body: str
 
+    # orm_mode requires to be activated since it's going to call all the blogs of a specific user from the "User_rModel"
+    class Config():
+        orm_mode = True
+
 
 
 # "blog_rModel" is placed below the "User_rModel" to get the relation while defining the field "creator" in the "blog_rModel".
@@ -34,6 +39,7 @@ class User(BaseModel):
 class User_rModel(BaseModel):
     name:str
     email:str
+    blog_r:List[Blog]
 
     class Config():
         orm_mode = True
