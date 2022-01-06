@@ -14,10 +14,13 @@ from typing import List
 # In FastAPI, the pydantic models are called as "Schemas"
 # Responsible for receiving the request-body from the client/ user/ browser.
 # [ NOTE ]: It will help to get the request-body from the client/ user while the corresponding API.
-class Blog(BaseModel):
+class BlogBase(BaseModel):
     title: str
     body: str
 
+
+
+class Blog(BlogBase):
     # orm_mode requires to be activated since it's going to call all the blogs of a specific user from the "User_rModel"
     class Config():
         orm_mode = True
