@@ -137,5 +137,58 @@ Ref [ Aid to build the data-update API ]:  https://www.youtube.com/watch?v=2g1Zj
     [ IMPORTANT ]:  If we want to apply response-model to such API where multiple-records exist inside the response-body, 
     then we need to wrap that with the "List[]" class imported from the "typing" module.
 
+    [ Better Approach ]: Instead of extending the main-schema-model as the response-model, extends/ inherits the request-model.
+    Means, the respone-model & the request-body-model should be separated, without extending the model created for the request-body.
+    Then, the response-model will be able to work properly.
+
+
+-----------------> Create User API
+
+19. Create a schema for providing a request-body for the client/ browser.
+    After that we required the DB connection in the mthod thorugh the method-param.
+    Then, the actual db-model aka SQLAlchemy model is required to be created.
+
+[ NOTE ]: THe password is not hashed in the response-body.
+
+Make the password hashed in the response-body after the API in called.
+20. Install two pip modules:  passlib[bcrypt] & bcrypt
+    Import the  CrpytContext frm the "passlib.context" module.
+    Make the instance of the password-hashing.
+    Hash the requested-password before setting that inside the user-creation-instance.
+
+    [ NB ]:  For hashing, we can create a class in a separate file called "hashing.py".
+    Inside that file, create a method ("bcrypt_hash") inside a class called "Hash".
+    This class-method will be used while creating the new user-instance & provide the "request.password" in the method param.
+
+
+-----------------> Build a response model for the user
+
+21. Build a response-nmodel for the user in order to display the name & email of the user.
+    This response-model will be created in the "schemas.py" file & passed through the API param.
+
+
+-----------------> Show the routes/endpoints using the tags
+
+22. For seprating the endpoints inside the documentation, that time, we can use the tags.
+    It'll seprate the endpoints according to the topics.
+    i.e. to seprate the blogs & users, we use the tags "blogs" & "tags".
+    Use the as the api-url-path params.
+
+
+-----------------> Relationships between the models
+
+23. When we want to make relationship between two tables, then we use the "relationship" from the "sqlalchemy.orm" inside the "models.py" file.
+    [ NOTE ]:  We are require to define the "back_populates" param. But while using the param "back_populates", we need to define the models according to their tableNames.
+    But to define relationship between two models, we need the foreignKeys.
+
+    [ NB ]:  If we don't pass the user-id while creating a new blog, then it'll throw an error.
+    So we're hard-coding the user-id while creating the blog-record, we're defining the user-id=1
+
+24. When we want to get an individual blog from the API, we want to get the creator-id inside the response-body.
+    Thus, we'll modify the response-model ("blog_rModel") inside the "schemas.py" file.
+    Create another field which will be defined as the "User_rModel" model.
+    [ NOTE ]: To avoid errors, we need to move the "blog_rModel" r_model below the "User_rModel" model.
+
+
 
 
