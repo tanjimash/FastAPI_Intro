@@ -211,4 +211,26 @@ Make the password hashed in the response-body after the API in called.
         Also, the response class models will also contain the class "Config()" to enable the "orm_mode".
 
 
+-----------------> APIRouter
+
+Doc Topic Ref:  https://fastapi.tiangolo.com/tutorial/bigger-applications/
+
+26. Since the application is getting bigger, we need to refactor to manage the code base of our application. 
+    So, we need to create a folder called "router", all the routers will be inside that directory. Create an empty "__init__.py" file there.
+    Create two route-files called "user.py" & "blog.py" file. Inside these route-files, import the "APIRouter" from the "fastapi" module.
+    Just like instantiating the "fastAPI" inside the "main.py" file, the APIROuter will also be instantiated.
+
+        [ NB ]:  Initially move the "get all blogs" API to the "user.py" file from the "main.py" file.
+
+27. The func for getting the db-sesison is moved to the "database.py" file.
+    [ NB ]:  Import all the necessary files into the "routers.py" file.
+
+28. In order to enbale the path-operations' APIs, we need to register the routes on our "main.py" file.
+    [ NB ]: Just like impoting all the urls from the other apps' urls in the django-environment's main "urls.py" file using the "include" keyword.
+
+    Import all the route files from the "routers" directory.
+    Include the route-files inside the "include_router()" func of fastapi-instance/object in the "main.py" file.
+
+
+
 
