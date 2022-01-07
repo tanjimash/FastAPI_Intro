@@ -178,17 +178,37 @@ Make the password hashed in the response-body after the API in called.
 -----------------> Relationships between the models
 
 23. When we want to make relationship between two tables, then we use the "relationship" from the "sqlalchemy.orm" inside the "models.py" file.
-    [ NOTE ]:  We are require to define the "back_populates" param. But while using the param "back_populates", we need to define the models according to their tableNames.
-    But to define relationship between two models, we need the foreignKeys.
+    
+    [ NOTE ]:  We are require to define the "back_populates" param. 
+    
+    But while using the param "back_populates", we need to define the models according to their tableNames.
+
+    Syntax:
+        relFieldName = relationship( "modelName", back_populates='otherRelModelFieldName' )
+
+    [ NOTE ]:  This "relFieldName" should be generated between both the models. 
+    
+    But to define relationship between two models, we need the foreignKey column in both models.
+    Syntax:
+        FK_columnName = Column( dataType, ForeignKey( 'otherModelTableName.id' ) )
+    [ NB ]:  dataType is typically be the "Integer" type.
 
     [ NB ]:  If we don't pass the user-id while creating a new blog, then it'll throw an error.
     So we're hard-coding the user-id while creating the blog-record, we're defining the user-id=1
 
-24. When we want to get an individual blog from the API, we want to get the creator-id inside the response-body.
-    Thus, we'll modify the response-model ("blog_rModel") inside the "schemas.py" file.
-    Create another field which will be defined as the "User_rModel" model.
-    [ NOTE ]: To avoid errors, we need to move the "blog_rModel" r_model below the "User_rModel" model.
 
+-----------------> Modify the response model after establishing the relationship between two SQLAlchemy models
+
+24. To view the creator of a specific blog while called through API, then we create another field inside the "" schema (serializer)/ pydantic model.
+    the fieldName should be exactly similar to the fieldName defined inside the SQLAlchemy mode inside the "models.py" file.
+    Syntax:
+        schemaFieldName: otherUserModelName
+    [ NB ]:  schemaFieldName = SQLAlchemy_model_relField
+        But the "schemaModel", which is going to be called in another schemaModel should be above that schemaModel.
+
+25. But then if we want to get all the blogs while a specific user or all user is called, then we should use the main "blog" schema.
+    [ NB ]:  If the response is consisted of multiple records, then it should be wrapped up with the "List[]" class.
+        Also, the response class models will also contain the class "Config()" to enable the "orm_mode".
 
 
 
