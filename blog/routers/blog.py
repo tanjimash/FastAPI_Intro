@@ -11,6 +11,7 @@ from starlette.responses import Response
 # instantiate the router
 # [ NOTE ]:  Use the tags param here intead of useing in every api-path-param
 router = APIRouter(
+    prefix='/blog',
     tags=["Blog"] 
 )
 
@@ -31,9 +32,10 @@ router = APIRouter(
 
 # get blogs from the DB
 # Using the response-model to display the response in customised manner.
-@router.get( '/subfolder/blog/', 
-        status_code=status.HTTP_200_OK,
-        response_model=List[schemas.blog_rModel] )
+@router.get( 
+    '/', 
+    status_code=status.HTTP_200_OK,
+    response_model=List[schemas.blog_rModel] )
 def get_all_blogs( db: Session = Depends( get_db ) ):
     # [ Query: get all rows ] make a query to get all the rows of blogs from the DB
     blogs = db.query( models.Blog ).all()
@@ -51,7 +53,7 @@ def get_all_blogs( db: Session = Depends( get_db ) ):
 # The "db" param will be of SQLAlchemy's "Session" object. And default value of the type-object will be fetched from the "get_db()" object.
 # @app.post( '/subfolder/blog/', status_code=201 )
 @router.post( 
-    '/subfolder/blog/', 
+    '/', 
     status_code=status.HTTP_201_CREATED )
 # [ NOTE ]: 'Session' alone is not a pydantic thing. Thus, it'll depend on the "SessionLocal" obj from the "database.py" file.
 # Ref ( Brief Explanation of 'db: Session' param ):  https://www.youtube.com/watch?v=7t2alSnE2-I
@@ -75,7 +77,7 @@ def create_blog( request: schemas.Blog, db: Session = Depends( get_db ) ):
 # Fetch data of a specific blog
 # This func will provide an input field for "id".
 @router.get( 
-    '/subfolder/blog/{id}', 
+    '/{id}/', 
     status_code=status.HTTP_200_OK,
     response_model=schemas.blog_rModel )    # cannot use spacing inside the 2nd bracket in the path-url
 def get_individual_blog_detail( id, response: Response, db: Session = Depends( get_db ) ):
@@ -105,7 +107,7 @@ def get_individual_blog_detail( id, response: Response, db: Session = Depends( g
 # Delete a specific blog
 # [ NOTE ]: when the status-code 204 is used, nothing will be returned as response
 @router.delete( 
-    '/subfolder/blog/{id}', 
+    '/{id}/', 
     status_code=status.HTTP_204_NO_CONTENT )
 # @app.delete( '/subfolder/blog/{id}', status_code=204 )
 # @app.delete( '/subfolder/blog/{id}' )
@@ -146,7 +148,7 @@ def delete_blog( id, db: Session=Depends( get_db ) ):
 
 # Update a specific blog
 @router.put( 
-    '/subfolder/blog/{id}', 
+    '/{id}/', 
     status_code=status.HTTP_202_ACCEPTED )
 # Make a request-body for the client (schemas) & fetch the db-session-model instance
 def update_blog( id, request: schemas.Blog, db: Session = Depends( get_db ) ):
