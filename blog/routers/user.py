@@ -10,8 +10,10 @@ from hash import Hash
 
 
 # instantiate the router
-router = APIRouter()
-
+# [ NOTE ]:  Use the tags param here intead of useing in every api-path-param
+router = APIRouter(
+    tags=["User"]
+)
 
 
 
@@ -27,8 +29,7 @@ router = APIRouter()
 # Create new user
 @router.post( 
     '/subfolder/user/', 
-    status_code=status.HTTP_200_OK,
-    tags=["Users"] )
+    status_code=status.HTTP_200_OK )
 def create_user( request:schemas.User, db: Session = Depends( get_db ) ):
     new_user = models.User(
         name=request.name,
@@ -51,7 +52,6 @@ def create_user( request:schemas.User, db: Session = Depends( get_db ) ):
     '/subfolder/user/', 
     status_code=status.HTTP_200_OK,
     response_model=List[schemas.User_rModel], 
-    tags=["Users"]
 )
 def user_list( db: Session = Depends( get_db ) ):
     user = db.query( models.User ).all()
@@ -64,8 +64,7 @@ def user_list( db: Session = Depends( get_db ) ):
 @router.get( 
     '/subfolder/user/{id}', 
     status_code=status.HTTP_200_OK,
-    response_model=schemas.User_rModel, 
-    tags=["Users"] )
+    response_model=schemas.User_rModel )
 def get_individual_user_detail( id, response: Response, db: Session = Depends( get_db ) ):
     user = db.query( models.User ).filter( models.User.id == id ).first()
     
@@ -88,8 +87,7 @@ def get_individual_user_detail( id, response: Response, db: Session = Depends( g
 # Update a specific user
 @router.put( 
     '/subfolder/user/{id}', 
-    status_code=status.HTTP_202_ACCEPTED, 
-    tags=["Users"] )
+    status_code=status.HTTP_202_ACCEPTED )
 # Make a request-body for the client (schemas) & fetch the db-session-model instance
 def update_user( id, request: schemas.User, db: Session = Depends( get_db ) ):
     user = db.query( models.User ).filter( models.User.id == id ).first()
@@ -124,8 +122,7 @@ def update_user( id, request: schemas.User, db: Session = Depends( get_db ) ):
 # [ NOTE ]: when the status-code 204 is used, nothing will be returned as response
 @router.delete( 
     '/subfolder/user/{id}', 
-    status_code=status.HTTP_204_NO_CONTENT, 
-    tags=["Users"] )
+    status_code=status.HTTP_204_NO_CONTENT )
 # @app.delete( '/subfolder/blog/{id}', status_code=204 )
 # @app.delete( '/subfolder/blog/{id}' )
 def delete_blog( id, db: Session=Depends( get_db ) ):
