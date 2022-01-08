@@ -49,6 +49,12 @@ class User_rModel(BaseModel):
 
 
 
+# User response model; used to display the createor of each blog
+class User_rModel_blog(BaseModel):
+    name:str
+    class Config():
+        orm_mode = True
+
 
 
 # response-model class (used for "show specific blog detail" API)
@@ -56,7 +62,7 @@ class User_rModel(BaseModel):
 class blog_rModel(BaseModel):
     title: str
     body: str
-    creator_r: User_rModel
+    creator_r: User_rModel_blog
 
     # [ NOTE ]: Since this class is interacting with the DB through SQLAlchemy ORM, 
     # so we need to explicitly define the orm_mode to True.

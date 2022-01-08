@@ -4,12 +4,21 @@ from typing import List
 from database import get_db
 from sqlalchemy.orm import Session
 from starlette.responses import Response
+from hash import Hash
 
 
 
 
 # instantiate the router
 router = APIRouter()
+
+
+
+
+
+# ########################################
+# >>>>>>>>>>>>>>>> User <<<<<<<<<<<<<<<<
+# ########################################
 
 
 
@@ -82,7 +91,7 @@ def get_individual_user_detail( id, response: Response, db: Session = Depends( g
     status_code=status.HTTP_202_ACCEPTED, 
     tags=["Users"] )
 # Make a request-body for the client (schemas) & fetch the db-session-model instance
-def update_blog( id, request: schemas.User, db: Session = Depends( get_db ) ):
+def update_user( id, request: schemas.User, db: Session = Depends( get_db ) ):
     user = db.query( models.User ).filter( models.User.id == id ).first()
     
     # Raise exception: if no such user is available with that ID.

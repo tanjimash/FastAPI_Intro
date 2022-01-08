@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, status, HTTPException
+from fastapi import FastAPI
 from starlette import responses
 from starlette.responses import Response
 import schemas, models
@@ -44,11 +44,6 @@ models.Base.metadata.create_all( engine )   # db will be created in the current 
 
 
 
-
-
-# ########################################
-# >>>>>>>>>>>>>>>> Users <<<<<<<<<<<<<<<<
-# ########################################
 
 
 

@@ -13,6 +13,14 @@ router = APIRouter()
 
 
 
+
+# ########################################
+# >>>>>>>>>>>>>>>> Blog <<<<<<<<<<<<<<<<
+# ########################################
+
+
+
+
 # while applying a schema-model to the respone-body where multiple-records exist,
 # then we need to wrap that response-model with List[]. 
 # [ NOTE ]:  List[] will be imported from the "typing" module.
