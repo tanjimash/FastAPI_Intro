@@ -68,3 +68,13 @@ class blog_rModel(BaseModel):
     # so we need to explicitly define the orm_mode to True.
     class Config():
         orm_mode = True
+
+
+
+
+
+# Pydantic model for handling the request of user-login from the browser
+class Login(BaseModel):
+    username: str
+    password: str
+

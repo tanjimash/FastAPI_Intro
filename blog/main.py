@@ -6,7 +6,7 @@ from database import engine, get_db
 from sqlalchemy.orm import Session
 from typing import List
 from hash import Hash
-from routers import blog, user
+from routers import blog, user, authentication
 # from routers import router
 
 
@@ -23,6 +23,7 @@ app = FastAPI()
 # Include all the route files from the "routers" directory.
 # app.include_router( router.blog )
 # attach "router" along with the route-file names
+app.include_router( authentication.router )
 app.include_router( blog.router )
 app.include_router( user.router )
 
