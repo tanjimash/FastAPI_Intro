@@ -29,3 +29,16 @@ Base = declarative_base()
 
 # Create database session
 SessionLocal = sessionmaker( bind=engine, autocommit=False, autoflush=False )
+
+
+
+
+
+
+# get the session of the DB
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
