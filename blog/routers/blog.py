@@ -4,7 +4,7 @@ from typing import List
 from database import get_db
 from sqlalchemy.orm import Session
 from starlette.responses import Response
-
+from repository.blog import *
 
 
 
@@ -37,11 +37,8 @@ router = APIRouter(
     status_code=status.HTTP_200_OK,
     response_model=List[schemas.blog_rModel] )
 def get_all_blogs( db: Session = Depends( get_db ) ):
-    # [ Query: get all rows ] make a query to get all the rows of blogs from the DB
-    blogs = db.query( models.Blog ).all()
-    return blogs
-
-
+    # all the function (path-operations) are moved to the "repository\blog.py" path.
+    return get_all_blog( db )
 
 
 
@@ -59,13 +56,10 @@ def get_all_blogs( db: Session = Depends( get_db ) ):
 # Ref ( Brief Explanation of 'db: Session' param ):  https://www.youtube.com/watch?v=7t2alSnE2-I
 # Time-Frame:  1:38:00
 def create_blog( request: schemas.Blog, db: Session = Depends( get_db ) ):
-    # Create the frame ( Schema ) according to the model-field of the class "Blog".
-    # create the instance of the request-data using inside the model-instance according to the models-fields.
-    new_blog = models.Blog( title=request.title, body=request.body, user_id=1 )
-    db.add( new_blog )  # add the new data-row
-    db.commit()  # save/ commit the addition of the new data
-    db.refresh( new_blog )  # refresh the "blog" table
-    return new_blog  # return the newly created "blog" model from the db-table in the client-ui
+    # all the function (path-operations) are moved to the "repository\blog.py" path.
+    # [ NOTE ]:  try to define the repo-funcs names distinctive.
+    return create_b( request, db )
+    
 
 
 
@@ -81,20 +75,9 @@ def create_blog( request: schemas.Blog, db: Session = Depends( get_db ) ):
     status_code=status.HTTP_200_OK,
     response_model=schemas.blog_rModel )    # cannot use spacing inside the 2nd bracket in the path-url
 def get_individual_blog_detail( id, response: Response, db: Session = Depends( get_db ) ):
-    blog = db.query( models.Blog ).filter( models.Blog.id == id ).first()
+    # all the function (path-operations) are moved to the "repository\blog.py" path.
+    return get_blog_detail( id, db )
     
-    # assigning appropriate status-code while handling error.
-    # check if there is any such blog available
-    if not blog:
-        # response.status_code = status.HTTP_404_NOT_FOUND
-        # return { 'data': f'Blog with the {id} is not available!' }   # provide a response msg
-
-        # Intead of using the aforementioned two things, use the HTTPException imported from the "fastapi"
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail= f'Blog with the {id} is not available!'
-        )
-    return blog
 
 
 
@@ -112,34 +95,8 @@ def get_individual_blog_detail( id, response: Response, db: Session = Depends( g
 # @app.delete( '/subfolder/blog/{id}', status_code=204 )
 # @app.delete( '/subfolder/blog/{id}' )
 def delete_blog( id, db: Session=Depends( get_db ) ):
-    # make a query from the "Blog" model & filter based on the "ID"
-    # search for the blog-obj from the db-model "Blog"
-    blog = db.query( models.Blog ).filter( models.Blog.id == id )
-    
-    # Raise exception: if no such blog is available with that ID.
-    if not blog.first():
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail= f'No such blog with id {id} is available!'
-        )
-    
-    blog.delete( synchronize_session=False )
-    db.commit()     # after deleting a row, it's required to make commit
-
-
-    # [ NOTE ] if the status-code 204 is used, nothing can be returned as response-body
-    # return 'The blog is deleted!'
-    # return { 'msg': f'The blog with the id {id} is deleted!' }
-
-    # refer to the documentation of SQLAlchemy
-    # Ref:  https://docs.sqlalchemy.org/en/14/orm/query.html?highlight=delete#sqlalchemy.orm.Query.delete
-    #  Instead of fetching the first-data-row, will use the "delete()" operation.
-
-
-
-
-
-
+    # all the function (path-operations) are moved to the "repository\blog.py" path.
+    return del_blog( id, db )
 
 
 
@@ -152,27 +109,6 @@ def delete_blog( id, db: Session=Depends( get_db ) ):
     status_code=status.HTTP_202_ACCEPTED )
 # Make a request-body for the client (schemas) & fetch the db-session-model instance
 def update_blog( id, request: schemas.Blog, db: Session = Depends( get_db ) ):
-    blog = db.query( models.Blog ).filter( models.Blog.id == id ).first()
-    
-    # Raise exception: if no such blog is available with that ID.
-    if not blog:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail= f'No such blog with id {id} is available!'
-        )
-
-    # Update the model-instance field using the client's request-body-field (schema - from the browser)
-    blog.title = request.title
-    blog.body = request.body
-
-    db.commit()
-    # # after committed updation, refresh the db.
-    db.refresh( blog )
-    # # provide the updated blog object (fetched from the db again).
-
-    return { 
-        'msg': 'The blog is updated!',
-        'Blog (Updated)': blog,
-    }
+    return update_b( id, request, db )
 
 

@@ -4,7 +4,7 @@ from typing import List
 from database import get_db
 from sqlalchemy.orm import Session
 from starlette.responses import Response
-from hash import Hash
+from repository.user import *
 
 
 
@@ -32,17 +32,9 @@ router = APIRouter(
     '/', 
     status_code=status.HTTP_200_OK )
 def create_user( request:schemas.User, db: Session = Depends( get_db ) ):
-    new_user = models.User(
-        name=request.name,
-        email=request.email,
-        password=Hash.bcrypt_hash( request.password ),
-    )
-
-    db.add( new_user )
-    db.commit()
-    db.refresh( new_user )  # refresh the "blog" table
-    return new_user  # return the newly created blog from the db-table in the client-ui
-
+    # all the function (path-operations) are moved to the "repository\user.py" path.
+    return create_u( request, db )
+    
 
 
 
@@ -55,8 +47,7 @@ def create_user( request:schemas.User, db: Session = Depends( get_db ) ):
     response_model=List[schemas.User_rModel], 
 )
 def user_list( db: Session = Depends( get_db ) ):
-    user = db.query( models.User ).all()
-    return user
+    return all_users( db )
 
 
 
@@ -67,20 +58,7 @@ def user_list( db: Session = Depends( get_db ) ):
     status_code=status.HTTP_200_OK,
     response_model=schemas.User_rModel )
 def get_individual_user_detail( id, response: Response, db: Session = Depends( get_db ) ):
-    user = db.query( models.User ).filter( models.User.id == id ).first()
-    
-    # assigning appropriate status-code while handling error.
-    # check if there is any such blog available
-    if not user:
-        # response.status_code = status.HTTP_404_NOT_FOUND
-        # return { 'data': f'Blog with the {id} is not available!' }   # provide a response msg
-
-        # Intead of using the aforementioned two things, use the HTTPException imported from the "fastapi"
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail= f'Blog with the {id} is not available!'
-        )
-    return user
+    return user_detail( id, db )
 
 
 
@@ -91,29 +69,8 @@ def get_individual_user_detail( id, response: Response, db: Session = Depends( g
     status_code=status.HTTP_202_ACCEPTED )
 # Make a request-body for the client (schemas) & fetch the db-session-model instance
 def update_user( id, request: schemas.User, db: Session = Depends( get_db ) ):
-    user = db.query( models.User ).filter( models.User.id == id ).first()
-    
-    # Raise exception: if no such user is available with that ID.
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail= f'No such user with id {id} is available!'
-        )
-
-    # Update the model-instance field using the client's request-body-field (schema - from the browser)
-    user.name = request.name
-    user.email = request.email
-    user.password = request.password
-
-    db.commit()
-    # # after committed updation, refresh the db.
-    db.refresh( user )
-    # # provide the updated user object (fetched from the db again).
-
-    return { 
-        'msg': 'User detail is updated!',
-        'User (Updated)': user,
-    }
+    # all the function (path-operations) are moved to the "repository\user.py" path.
+    return update_user_detail( id, request, db )
 
 
 
@@ -127,17 +84,5 @@ def update_user( id, request: schemas.User, db: Session = Depends( get_db ) ):
 # @app.delete( '/subfolder/blog/{id}', status_code=204 )
 # @app.delete( '/subfolder/blog/{id}' )
 def delete_blog( id, db: Session=Depends( get_db ) ):
-    # make a query from the "User" model & filter based on the "ID"
-    # search for the user-obj from the db-model "User"
-    user = db.query( models.User ).filter( models.User.id == id )
-    
-    # Raise exception: if no such blog is available with that ID.
-    if not user.first():
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail= f'No such user with id {id} is available!'
-        )
-    
-    user.delete( synchronize_session=False )
-    db.commit()  
+    return delete_b( id, db )  
 
