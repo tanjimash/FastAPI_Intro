@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 
 # #########################
@@ -77,4 +77,16 @@ class blog_rModel(BaseModel):
 class Login(BaseModel):
     username: str
     password: str
+
+
+
+
+# response-model for displaying the JWT Token
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
 

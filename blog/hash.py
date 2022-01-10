@@ -9,3 +9,7 @@ class Hash():
     def bcrypt_hash( password:str ):
         # hash the password
         return pwd_ctx.hash( password )
+    
+
+    def verify( plain_pass, hashed_pass ):
+        return pwd_ctx.verify( plain_pass, hashed_pass )

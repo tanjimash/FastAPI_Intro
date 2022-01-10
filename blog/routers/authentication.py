@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, status, HTTPException
 import schemas, models
 from database import get_db
 from sqlalchemy.orm import Session
-
-
+from hash import Hash
+from datetime import datetime, timedelta
+from jwt_token import create_access_token
 
 router = APIRouter(
     prefix='/auth',
@@ -21,11 +22,43 @@ def login( request: schemas.Login, db: Session = Depends( get_db ) ):
     # Pass the email of a user inside the "username" of the "request-body" in the browser.
     user = db.query( models.User ).filter( models.User.email == request.username ).first()
 
+    # print( user.id )
+    # print( user.name )
+    # print( user.email )
+    # print( user.password )
+
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail= 'Invalid Credentials'
+            detail= 'Invalid Credentials!'
         )
 
-    return user
+    # print( 'Plain pass: ', request.password )
+    # print( 'Hashed pass: ', user.password )
 
+    if not Hash.verify( request.password, user.password ):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail= 'Invalid Password!'
+        )
+
+    
+    # generate JWT token & return
+    ACCESS_TOKEN_EXPIRE_MINUTES = 30
+    access_token_expire = timedelta( minutes=ACCESS_TOKEN_EXPIRE_MINUTES )
+
+    # call the "create_access_token" method from the "token.py" file & assign that token inside a variable.
+    # Syntax = create_access_token( data={ 'sub':username }, expire_delta=access_token_expires )
+    access_token = create_access_token(
+        data={ 'sub': user.email },
+        expire_delta=access_token_expire
+    )
+
+    context = {
+        "access_token": access_token, 
+        "token_type": "bearer",
+        "user": user,
+    }
+
+    return context
