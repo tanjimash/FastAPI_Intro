@@ -1,3 +1,9 @@
+############### Ref ###############
+Youtube Video Link:   https://www.youtube.com/watch?v=7t2alSnE2-I
+###################################
+
+
+
 #####   Procedure of building a system with FastAPI #####
 
 
@@ -231,6 +237,117 @@ Doc Topic Ref:  https://fastapi.tiangolo.com/tutorial/bigger-applications/
     Import all the route files from the "routers" directory.
     Include the route-files inside the "include_router()" func of fastapi-instance/object in the "main.py" file.
 
+
+-----------------> Initialize tags while initializing APIRouter
+
+29. After refatoring the APIs, we can define the tags in the params while initializing the APIRouter.
+    Thus the tags from each API path-params.
+    Example:
+            router = APIRouter(
+                tags=["User"]
+            )
+
+
+-----------------> Using prefix in all the routes
+
+30. All the API routes can have a prefix. It can be done inside the APIRouter initialization param.
+    By doing this, we can refactor & cleanse the api-path string while defining the APIs.
+
+
+-----------------> Refactor the Routers
+
+[ NB ]:  Put all the path-operations in the separated files inside the "repository" directory.
+    Main codes of the path-operations will be moved there & in the path-operations, the repo-file methods will be called.
+    By this approach, we can make the code more organized & clean.
+
+31. What is the responsibility of routers? => To route the paths of every path-operations/ methods.
+    So, all the functional codes that were used in the path-operations should be moved to a dedicated place called the 
+    "repository" directory. There will be files for the path operations of every topic seperately.
+    Then those functions will be called inside the path operations.
+    [ NOTE ]:  This functions are required to be distinctive than the path-operations (method) names.
+
+
+-----------------> User Login & Verify Password
+
+Doc Ref:  https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/
+Doc Topic:  OAuth2 with Password (and hashing), Bearer with JWT tokens
+
+# Create the route so that the user can login using the email & password
+
+32. Create another router file for the authentication called "authentication.py".
+    Then create another schema/serializer/pydantic model for the user login to handle the request of user posing from the browser.
+
+[ NOTE ]:  The oauth2 module for handling the authentication in fastapi required username for authentication.
+    Thus the pydantic-model for handling the login-request-body has the username instead of email.
+    Then fetch the user-record from the SQLAlchemy model by providing the user-email & the password inside the request-body of the browser.
+    Lately, we need to initialize the JWT token.
+    Before implementing the JWT, we need to verify the password. For that, we will create another method called "verify()" inside the model-class "Hash".
+    In the "verify()" method, two params will be passed to receive the "hashed_password" & "plain_password".
+    hashed_password = will be get from the model user.
+    plain_password = will be get from the requerst body.
+    The actual "verify( plain_pass, hashed_pass )" method will be used from the "CryptContext" class of the "passlib.context".
+
+
+-----------------> Generate JWT Token
+
+Install Library:  pip install python-jose
+
+33. It's requried to have the SECRET_KEY, ALGORITHM & ACCESS_TOKEN_EXPIRY_MINUTES to encode the generated JWT Access Token.
+    Create a separate file ( "jwt_token.py" ) to generate JWT token & put all the variables there.
+    [ NB ]:  Don't create a file called "token.py", instead create a file called "jwt_token".
+
+34. Then create two response/schema model accordingly for displaying token & another model for the username (email).
+
+35. Inside the 'jwt_token.py' file, we'll create a method called ("create_access_token"), this method will have two params to receive a data-dict (token-included) & for token-expiration-time.
+    "create_access_token" method breakdown:
+        # get the data-dict ( typically user-email )
+        # check if the expiry-time is provided, otherwise, the expiry-time will be created using the "timedelta" method.
+        # append the expiry-time with the data-dictionary
+        # generate the "jwt_token" using the "jwt.encode()" method imported from the "python-jose".
+
+
+-----------------> Protect the routes behind the token-authentication ( ROutes behind the 'Authentication' )
+                    OAuth2 Validation
+
+# [ IMPORTANT ]:  Now we need to use the "OAuth2PasswordBearer". This will hit the login-url-api using the "tokenURL".
+        In my case, the login-api is defined as "/auth/loginAPI/" inside the "blog\oauth2.py" file.
+        Moreover, if we want to fetch the token from the login-api-route, in that case, we are required to use the "OAuth2PasswordRequestForm" without any dependancy, 
+        instead of "schemas.Login" model in the path-operations-param. Thus, it'll change the request-body of that api-route.
+
+
+[ Install requirements ]
+#       pip install python-multipart
+This is because OAuth2 uses "form data" for sending the username and password.
+
+
+
+# [ NB ]:  Whenever we want to give authentication to any route, we need to specify that this route is going to depend upon a function called "get_current_active_user".
+    "get_current_active_user" is nothing but checking if the user is active or not by having a dependency method called "get_current_user". 
+    [ NB ]: We can directly use the "get_current_user" method to validate the token by decoding using the "jwt" package from the "python-jose" module.
+    The dependecy method ( "get_current_user" ) has a parameter to receive the auth-token, which will depend upon the "oauth2_scheme" variable. 
+    This "oauth2_scheme" variable is instantiated by using the "OAuth2PasswordBearer()". Inside the "OAuth2PasswordBearer()", we just need to mention that from which route it'll fetch the token.
+    This method "get_current_user" will check the validity of the token.
+
+    [ IMPORTANT ]:  Inside this method, we are required to specify the login-api-route through the "tokenURL".
+            In my case, the login-api-url is "/auth/loginAPI/".
+            This route can also be metioned as "auth/loginAPI".
+
+
+36. Create a new file called "oAuth2.py". Inside this file, firstly, create the method "get_current_user".
+    Inside this method, firstly create a template-variable for the credential-exceptions so that we can raise exception by just calling the variable.
+    Then we will decode the token using the jwt package. The code-block for decoding the jwt-token is placed inside the "jwtToken.py" file,
+    created the method as "verify_token" method.
+
+
+37. Create another method ( "verify_token" ) inside the "jwt_token.py" file. This method will be called inside the "get_current_user" method of "oauth2.py" file. 
+    This "verify_token" method will use the "decode()" method from the "jwt" module. In the "decode()" method, we need the token, SECRET_KEY & the algorithm.
+    After decoding, assign that data inside the "payload" variable, & from that variable, get the "user-email" by calling the key called "sub".
+    After extracting the user-email from the "payload" variable, pass that in the schema-model called "TokenData" through another variable called "email".
+    
+    [ IMPORTANT ]  The "verify_token" gets completed by passing the decoded "user-email" to the schema-model "TokenData".
+
+38. [ IMPORTANT ]  To make the autorization successful, we need to use the "OAuth2PasswordRequestForm" inside the login-api's path-operations param,
+    which is inside the "blog\routers\authentication.py" file as a request-body instead of schem-model called "login".
 
 
 

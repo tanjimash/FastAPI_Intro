@@ -19,6 +19,9 @@ from routers import blog, user, authentication
 app = FastAPI()
 
 
+# Define the route explicitly, so that it can get the token to be beared using the "OAuth2PasswordBearer" method.
+# oauth2_scheme = OAuth2PasswordBearer( tokenUrl='token' )
+
 
 # Include all the route files from the "routers" directory.
 # app.include_router( router.blog )
