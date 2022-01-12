@@ -1,10 +1,17 @@
 from fastapi import APIRouter, status, Depends, HTTPException
-import schemas, models
+import schemas, models, oauth2
 from typing import List
 from database import get_db
 from sqlalchemy.orm import Session
 from starlette.responses import Response
 from repository.blog import *
+# from ..oAuth2 import get_current_user
+
+
+# import sys
+# sys.path.append("..")
+
+# import oauth2
 
 
 
@@ -32,11 +39,15 @@ router = APIRouter(
 
 # get blogs from the DB
 # Using the response-model to display the response in customised manner.
+# [ Authorization ]:  use another param as the path-operations param called "current_user" which will depend upon the "get_current_user()" method from the "blog\oauth2.py" file.
+#       the param "current_user" will be the type of schema-model "User".
+# [ Authorization dependency ]:  is used in the method/ path-operations param
 @router.get( 
     '/', 
     status_code=status.HTTP_200_OK,
     response_model=List[schemas.blog_rModel] )
-def get_all_blogs( db: Session = Depends( get_db ) ):
+def get_all_blogs( db: Session = Depends( get_db ),
+    get_current_user: schemas.User = Depends( oauth2.get_current_user ) ):
     # all the function (path-operations) are moved to the "repository\blog.py" path.
     return get_all_blog( db )
 
@@ -49,6 +60,7 @@ def get_all_blogs( db: Session = Depends( get_db ) ):
 # Convert the session into the pydantic model.
 # The "db" param will be of SQLAlchemy's "Session" object. And default value of the type-object will be fetched from the "get_db()" object.
 # @app.post( '/subfolder/blog/', status_code=201 )
+# [ Authorization dependency ]:  is used in the method/ path-operations param
 @router.post( 
     '/', 
     status_code=status.HTTP_201_CREATED )
