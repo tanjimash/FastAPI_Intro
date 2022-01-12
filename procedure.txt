@@ -349,5 +349,7 @@ This is because OAuth2 uses "form data" for sending the username and password.
 38. [ IMPORTANT ]  To make the autorization successful, we need to use the "OAuth2PasswordRequestForm" inside the login-api's path-operations param,
     which is inside the "blog\routers\authentication.py" file as a request-body instead of schem-model called "login".
 
+39. Set the api-routes behind the authentication.
+    Thus, we use the "current_user: schemas.User = Depends( oauth2.get_current_user )" inside all the path-operations where we need.
 
 

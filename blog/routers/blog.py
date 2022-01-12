@@ -47,7 +47,7 @@ router = APIRouter(
     status_code=status.HTTP_200_OK,
     response_model=List[schemas.blog_rModel] )
 def get_all_blogs( db: Session = Depends( get_db ),
-    get_current_user: schemas.User = Depends( oauth2.get_current_user ) ):
+    current_user: schemas.User = Depends( oauth2.get_current_user ) ):
     # all the function (path-operations) are moved to the "repository\blog.py" path.
     return get_all_blog( db )
 
@@ -67,7 +67,8 @@ def get_all_blogs( db: Session = Depends( get_db ),
 # [ NOTE ]: 'Session' alone is not a pydantic thing. Thus, it'll depend on the "SessionLocal" obj from the "database.py" file.
 # Ref ( Brief Explanation of 'db: Session' param ):  https://www.youtube.com/watch?v=7t2alSnE2-I
 # Time-Frame:  1:38:00
-def create_blog( request: schemas.Blog, db: Session = Depends( get_db ) ):
+def create_blog( request: schemas.Blog, db: Session = Depends( get_db ),
+    current_user: schemas.User = Depends( oauth2.get_current_user ) ):
     # all the function (path-operations) are moved to the "repository\blog.py" path.
     # [ NOTE ]:  try to define the repo-funcs names distinctive.
     return create_b( request, db )
@@ -86,7 +87,8 @@ def create_blog( request: schemas.Blog, db: Session = Depends( get_db ) ):
     '/{id}/', 
     status_code=status.HTTP_200_OK,
     response_model=schemas.blog_rModel )    # cannot use spacing inside the 2nd bracket in the path-url
-def get_individual_blog_detail( id, response: Response, db: Session = Depends( get_db ) ):
+def get_individual_blog_detail( id, response: Response, db: Session = Depends( get_db ),
+    current_user: schemas.User = Depends( oauth2.get_current_user ) ):
     # all the function (path-operations) are moved to the "repository\blog.py" path.
     return get_blog_detail( id, db )
     
@@ -106,7 +108,8 @@ def get_individual_blog_detail( id, response: Response, db: Session = Depends( g
     status_code=status.HTTP_204_NO_CONTENT )
 # @app.delete( '/subfolder/blog/{id}', status_code=204 )
 # @app.delete( '/subfolder/blog/{id}' )
-def delete_blog( id, db: Session=Depends( get_db ) ):
+def delete_blog( id, db: Session=Depends( get_db ),
+    current_user: schemas.User = Depends( oauth2.get_current_user ) ):
     # all the function (path-operations) are moved to the "repository\blog.py" path.
     return del_blog( id, db )
 
@@ -120,7 +123,8 @@ def delete_blog( id, db: Session=Depends( get_db ) ):
     '/{id}/', 
     status_code=status.HTTP_202_ACCEPTED )
 # Make a request-body for the client (schemas) & fetch the db-session-model instance
-def update_blog( id, request: schemas.Blog, db: Session = Depends( get_db ) ):
+def update_blog( id, request: schemas.Blog, db: Session = Depends( get_db ),
+    current_user: schemas.User = Depends( oauth2.get_current_user ) ):
     return update_b( id, request, db )
 
 

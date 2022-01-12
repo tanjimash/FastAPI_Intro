@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends, HTTPException
-import schemas, models
+import schemas, models, oauth2
 from typing import List
 from database import get_db
 from sqlalchemy.orm import Session
@@ -31,7 +31,8 @@ router = APIRouter(
 @router.post( 
     '/', 
     status_code=status.HTTP_200_OK )
-def create_user( request:schemas.User, db: Session = Depends( get_db ) ):
+def create_user( request:schemas.User, db: Session = Depends( get_db ),
+    current_user: schemas.User = Depends( oauth2.get_current_user ) ):
     # all the function (path-operations) are moved to the "repository\user.py" path.
     return create_u( request, db )
     
@@ -46,7 +47,8 @@ def create_user( request:schemas.User, db: Session = Depends( get_db ) ):
     status_code=status.HTTP_200_OK,
     response_model=List[schemas.User_rModel], 
 )
-def user_list( db: Session = Depends( get_db ) ):
+def user_list( db: Session = Depends( get_db ),
+    current_user: schemas.User = Depends( oauth2.get_current_user ) ):
     return all_users( db )
 
 
@@ -57,7 +59,8 @@ def user_list( db: Session = Depends( get_db ) ):
     '/{id}/', 
     status_code=status.HTTP_200_OK,
     response_model=schemas.User_rModel )
-def get_individual_user_detail( id, response: Response, db: Session = Depends( get_db ) ):
+def get_individual_user_detail( id, response: Response, db: Session = Depends( get_db ),
+    current_user: schemas.User = Depends( oauth2.get_current_user ) ):
     return user_detail( id, db )
 
 
@@ -68,7 +71,8 @@ def get_individual_user_detail( id, response: Response, db: Session = Depends( g
     '/{id}/', 
     status_code=status.HTTP_202_ACCEPTED )
 # Make a request-body for the client (schemas) & fetch the db-session-model instance
-def update_user( id, request: schemas.User, db: Session = Depends( get_db ) ):
+def update_user( id, request: schemas.User, db: Session = Depends( get_db ),
+    current_user: schemas.User = Depends( oauth2.get_current_user ) ):
     # all the function (path-operations) are moved to the "repository\user.py" path.
     return update_user_detail( id, request, db )
 
@@ -83,6 +87,7 @@ def update_user( id, request: schemas.User, db: Session = Depends( get_db ) ):
     status_code=status.HTTP_204_NO_CONTENT )
 # @app.delete( '/subfolder/blog/{id}', status_code=204 )
 # @app.delete( '/subfolder/blog/{id}' )
-def delete_blog( id, db: Session=Depends( get_db ) ):
+def delete_blog( id, db: Session=Depends( get_db ),
+    current_user: schemas.User = Depends( oauth2.get_current_user ) ):
     return delete_b( id, db )  
 
